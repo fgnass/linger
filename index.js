@@ -3,8 +3,8 @@ var ansi = {
   b: '\033[30m', // black
   B: '\033[1m',  // bold
   R: '\033[0m',  // reset
-  o: '◦',
-  O: '●'
+  o: '∙',
+  O: '•'
 }
 
 function decode(a) {
@@ -69,7 +69,7 @@ module.exports = function(msg, cb) {
 
   var timer = setInterval(function() {
     var str = frames[i++ % len]
-    if (str) stdout.write('\r ' + ansi.R + str)
+    if (str) stdout.write('\u001b[2G' + ansi.R + str)
   }, 100)
 
   return stop
