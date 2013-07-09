@@ -38,7 +38,7 @@ module.exports = function(msg, cb) {
     stdout.write('\u001b[?25h') //show the cursor
     clearInterval(timer)
     stdin.pause()
-    cb(reason)
+    if (cb) cb(reason)
   }
 
   if (stdin.setRawMode) {
