@@ -1,7 +1,7 @@
 {
   "name": "linger",
-  "version": "0.0.2",
-  "description": "Busy-indicator for the terminal",
+  "version": "0.0.3",
+  "description": "A busy indicator for the terminal",
   "keywords": [ "ansi", "animation", "busy", "wait", "watch" ],
   "main": "index.js",
   "repository": "http://github.com/fgnass/linger.git",

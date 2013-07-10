@@ -1,76 +1,54 @@
-var ansi = {
-  g: '\033[32m', // green
-  b: '\033[30m', // black
-  B: '\033[1m',  // bold
-  R: '\033[0m',  // reset
+var code = {
+  h: '\u001b[?25l', // hide cursor
+  s: '\u001b[?25h', // show cursor
+  1: '\u001b[1G',   // move to col 1
+  c: '\u001b[2K',   // clear line
+  g: '\033[32m',    // green
+  b: '\033[30m',    // black
+  B: '\033[1m',     // bold
+  X: '\033[0m',     // reset
   o: '∙',
-  O: '•'
+  O: '•',
+  _: ' '
 }
 
-function decode(a) {
-  return a.map(function(s) {
-    if (!s) return
-    return s.split('').map(function(c) { return ansi[c] }).join('')
-  })
+function decode(s) {
+  if (!s) return
+  return s.split('').map(function(c) { return code[c] }).join('')
 }
 
-var frames = decode([
+function write() {
+  for (var i=0; i < arguments.length; i++) {
+    var s = arguments[i]
+    process.stdout.write(Array.isArray(s) ? decode(s[0]) : s)
+  }
+}
+
+var frames = [
   'goO',
   'bBogO',
   ,,,,
-  'bBoRgO',
+  'bBoXgO',
   'gOo',
   'gBObo',
   ,,,,
   'gObBo'
-])
+].map(decode)
 
+var timer
+  , len = frames.length
+  , i = 0
 
-var stdin = process.stdin
-  , stdout = process.stdout
-
-module.exports = function(msg, cb) {
-
-  function stop(reason) {
-    stdout.write(ansi.R)
-    stdout.write('\u001b[2K') // erase line
-    stdout.write('\r')
-    stdout.write('\u001b[?25h') //show the cursor
-    clearInterval(timer)
-    stdin.pause()
-    if (cb) cb(reason)
+module.exports = function(msg) {
+  clearInterval(timer)
+  if (msg === false || msg === undefined) {
+    write(['Xc1s'])
   }
-
-  if (stdin.setRawMode) {
-    stdin.setRawMode(true)
-    // Start reading from stdin so we don't exit
-    stdin.resume()
-    stdin.setEncoding('utf8')
-
-    process.on('SIGTERM', function(s) {
-      stop('exit')
-    })
-
-    stdin.on('data', function(key) {
-      // Ctrl-C or Ctrl-D
-      if (key == '\u0003' || key == '\u0004') {
-        stop(key == '\u0003' ? 'ETX' : 'EOT')
-        stdin.setRawMode(false)
-      }
-    })
-
+  else {
+    write(['h'])
+    timer = setInterval(function() {
+      var str = frames[i++ % len]
+      if (str) write(['1_X'], str, ['bB_'], msg || '', ['X'])
+    }, 100)
   }
-
-  stdout.write('\u001b[?25l') // hide the cursor
-  if (msg) stdout.write('    ' + ansi.B + ansi.b + msg)
-
-  var len = frames.length
-    , i = 0
-
-  var timer = setInterval(function() {
-    var str = frames[i++ % len]
-    if (str) stdout.write('\u001b[2G' + ansi.R + str)
-  }, 100)
-
-  return stop
 }

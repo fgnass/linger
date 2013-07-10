@@ -1,27 +1,18 @@
-# linger
+# linger – a busy indicator for the terminal
 
 ![screenshot](http://fgnass.github.io/images/linger.gif)
 
-Linger displays an ANSI animation until either:
-
-* Ctrl-C or Crl-D is pressed
-* the returned `stop()` function is called
-* the process receives a SIGTERM
-
-## Usage
+### Usage
 
 ```js
 var linger = require('linger')
+linger('waiting for things to happen ...')
 
-var stop = linger('zzZz', function(c) {
-  if (c == 'SIGTERM') console.log('SIGTERM received.')
-  else if (c == 'ETX') console.log('Ctrl-C was pressed.')
-  else if (c == 'EOT') console.log('Ctrl-D was pressed.')
-  else console.log('stop("%s") was called.', c)
-})
+// Invoke without arguments to stop the animation
+setTimeout(linger, 5000)
 ```
 
-## The MIT License (MIT)
+### The MIT License (MIT)
 
 Copyright (c) 2013 Felix Gnass
 
