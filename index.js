@@ -45,10 +45,9 @@ module.exports = function(msg) {
     write(['Xc1s'])
   }
   else {
-    write(['h'])
     timer = setInterval(function() {
       var str = frames[i++ % len]
-      if (str) write(['1_X'], str, ['bB_'], msg || '', ['X'])
+      if (str) write(['h1_X'], str, ['bB_'], msg, ['Xs_'])
     }, 100)
   }
 }
